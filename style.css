@@ -103,16 +103,24 @@ body {
   margin-bottom: 25px;
   margin-left: 10px;
 }
-.product-active {
+.prdactive {
   border: 3px solid var(--red-color);
 }
 .container .products .show-products .product .img {
-  width: 100%;
+  width: 300px;
   height: 300px;
   border-radius: 10px;
   background-color: yellow;
-  background-image: url("./assets/images/image-waffle-desktop.jpg");
+  background-repeat: no-repeat;
   position: relative;
+}
+.container .products .show-products .product .img .bg {
+  width: 300px;
+  height: 300px;
+  border-radius: 10px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+    rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+  position: absolute;
 }
 .container .products .show-products .product .add-to-cart {
   width: 180px;
