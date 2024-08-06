@@ -1,8 +1,11 @@
 const products = Array.from(document.querySelectorAll(".product"));
 const addToCart = Array.from(document.querySelectorAll(".add-to-cart"));
 const productCount = Array.from(document.querySelectorAll(".product-count"));
+const cart = document.querySelector(".cart");
+const moins = Array.from(document.querySelectorAll(".moins"));
+const plus = Array.from(document.querySelectorAll(".plus"));
 
-//products list
+/////  Data Products List
 let allProducts = [
   {
     name: "Waffle",
@@ -28,12 +31,21 @@ let allProducts = [
   },
 ];
 
-// Hide product Counter from product
+//////////////////////////////////////////////
+///// Hide product Counter from product //////
+//////////////////////////////////////////////
 productCount.map((ele) => {
   ele.setAttribute("style", "display: none");
 });
 
-// Onclick Show product coutner and hide Add To Cart Buton from product
+///////////////////////////////////////////////////////////////
+////////// Create Empty Cart  /////////////////////////////////
+///////////////////////////////////////////////////////////////
+createEmptyCart();
+
+//////////////////////////////////////////////////////////////////////////////////////
+///// Onclick Show product coutner and hide Add To Cart Buton from product  //////////
+//////////////////////////////////////////////////////////////////////////////////////
 addToCart.map((ele, index) => {
   ele.addEventListener("click", (e) => {
     ele.setAttribute("style", "display: none");
@@ -41,58 +53,37 @@ addToCart.map((ele, index) => {
     allProducts[index].counter = 1;
     productCount[index].children[1].textContent = allProducts[index].counter;
     products[index].children[0].children[0].classList.add("prdactive");
-    //
     createProdOnCart();
   });
 });
 
-// Set Name, Title and Price From All products Array to Display
+///////////////////////////////////////////////////////////////////////////////////////
+//////  Set Name, Title and Price From All products Array to Display  /////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 products.map((product, index) => {
   product.children[1].textContent = allProducts[index].name;
   product.children[2].textContent = allProducts[index].title;
   product.children[3].textContent = `$${allProducts[index].price}`;
 });
 
-// Counter Moins Button
-const moins = Array.from(document.querySelectorAll(".moins"));
-moins.forEach((m, index) => {
-  m.addEventListener("click", () => {
-    let counter = +m.parentElement.children[1].textContent;
-    if (counter >= 1) {
-      counter--;
-    }
-    if (counter == 0) {
-      productCount[index].setAttribute("style", "display: none");
-      addToCart[index].setAttribute("style", "display: flex");
-      products[index].children[0].children[0].classList.remove("prdactive");
-    }
-    m.parentElement.children[1].textContent = counter;
-    allProducts[index].counter = counter;
-    createProdOnCart();
-  });
-});
+////////////////////////////////////////////////////////////////
+////////////// Remove All Empty Cart  /////////////////////////
+////////////////////////////////////////////////////////////////
+function removeAllEmptyCart() {
+  // Remove Empty Cart
+  let divEmptyCrtall = document.querySelectorAll(".cart-empty");
+  divEmptyCrtall.forEach((ele) => ele.setAttribute("style", "display:none"));
+}
 
-// Counter Plus Button
-const plus = Array.from(document.querySelectorAll(".plus"));
-plus.forEach((p, index) => {
-  p.addEventListener("click", () => {
-    let counter = +p.parentElement.children[1].textContent;
-    counter++;
-    p.parentElement.children[1].textContent = counter;
-    allProducts[index].counter = counter;
-    createProdOnCart();
-  });
-});
+///////////////////////////////////////////////////////////////
+////////// Create Empty Cart  /////////////////////////////////
+///////////////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////
-//////////////// Start Cart      ///////////////////////
-//////////////////////////////////////////////////////
-
-//// Get Cart
-const cart = document.querySelector(".cart");
-//// Create EmptyCart
-createEmptyCart();
 function createEmptyCart() {
+  ////// Remove All Empty Cart  ///
+  removeAllEmptyCart();
+
+  ////// Create Empty Cart  ///
   let divEmptyCart = document.createElement("div");
   divEmptyCart.className = "cart-empty";
   cart.appendChild(divEmptyCart);
@@ -108,19 +99,26 @@ function createEmptyCart() {
   divEmptyCart.appendChild(cartPara);
 }
 
-/// Create  and Set Product on Cart
+////////////////////////////////////////////////////////////////
+////////// Show Products On Cart  /////////////////////////////
+////////////////////////////////////////////////////////////////
+// /// Create  and Set Product on Cart
 function createProdOnCart() {
-  // Remove Empty Cart
-  let divEmptyCrt = document.querySelector(".cart-empty");
-  divEmptyCrt.setAttribute("style", "display:none");
+  ////// Remove All Empty Cart  ///
+  removeAllEmptyCart();
 
-  // Get Products that will show on Cart
+  //// Get Products that will show on Cart
   let productsOnCart = allProducts.filter((product) => {
     return product.counter >= 1;
   });
+  if (productsOnCart.length == 0) {
+    createEmptyCart();
+  }
+  console.log(productsOnCart);
   const prodsCatrs = document.querySelectorAll(".cart-product");
   prodsCatrs.forEach((pd) => pd.setAttribute("style", "display:none"));
-  // Show Products On Cart
+  prodsCatrs.forEach((pd) => pd.setAttribute("style", "display:none"));
+  //   // Show Products On Cart
   productsOnCart.forEach((product) => {
     let divProdCart = document.createElement("div");
     divProdCart.className = "cart-product";
@@ -165,52 +163,38 @@ function createProdOnCart() {
     prodRmh3.appendChild(prodRmh3Txt);
     cartPrdRemove.appendChild(prodRmh3);
   });
-  let totalPrice = productsOnCart.reduce((total, product) => {
-    return total + product.price * product.counter;
-  }, 0);
-
-  //
-  const divPrTT = document.querySelectorAll(".total-order");
-  divPrTT.forEach((pd) => pd.setAttribute("style", "display:none"));
-  /// Create  and Set Total Price on Cart
-  let divTprc = document.createElement("div");
-  divTprc.className = "total-order";
-  cart.appendChild(divTprc);
-
-  let divTprcTitle = document.createElement("span");
-  let divTprcTitleTxt = document.createTextNode("Order Total :");
-  divTprcTitle.appendChild(divTprcTitleTxt);
-  divTprc.appendChild(divTprcTitle);
-
-  let divTprcTotal = document.createElement("span");
-  let divTprcTotalTxt = document.createTextNode(`${totalPrice.toFixed(2)}`);
-  divTprcTotal.appendChild(divTprcTotalTxt);
-  divTprc.appendChild(divTprcTotal);
-
-  //
-  const divConfm = document.querySelectorAll(".btn");
-  divConfm.forEach((dvC) => dvC.setAttribute("style", "display:none"));
-  /// Create  and Set Confirmation Button on Cart
-  let divConf = document.createElement("div");
-  divConf.className = "btn";
-  cart.appendChild(divConf);
-
-  let prcBtn = document.createElement("button");
-  let prcBtnTxt = document.createTextNode("Confirm Order");
-  prcBtn.appendChild(prcBtnTxt);
-  divConf.appendChild(prcBtn);
 }
 
-// Remove Total Price and Cofirmation Button
-function rmTotalPrc() {
-  let totalPrc = document.querySelectorAll(".total-order");
-  totalPrc.forEach((ele) => ele.setAttribute("style", "display:none"));
-  console.log(totalPrc);
-  let confBtn = document.querySelectorAll(".btn");
-  confBtn.forEach((ele) => ele.setAttribute("style", "display:none"));
-  console.log(confBtn);
-}
+////////////////////////////////////////////////////////////////
+//////////  Counter Plus Button    /////////////////////////////
+////////////////////////////////////////////////////////////////
+plus.forEach((p, index) => {
+  p.addEventListener("click", () => {
+    let counter = +p.parentElement.children[1].textContent;
+    counter++;
+    p.parentElement.children[1].textContent = counter;
+    allProducts[index].counter = counter;
+    createProdOnCart();
+  });
+});
 
-//////////////////////////////////////////////////////
-//////////////// End Cart      ///////////////////////
-//////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
+//////////  Counter Moins Button   /////////////////////////////
+////////////////////////////////////////////////////////////////
+
+moins.forEach((m, index) => {
+  m.addEventListener("click", () => {
+    let counter = +m.parentElement.children[1].textContent;
+    if (counter >= 1) {
+      counter--;
+    }
+    if (counter == 0) {
+      productCount[index].setAttribute("style", "display: none");
+      addToCart[index].setAttribute("style", "display: flex");
+      products[index].children[0].children[0].classList.remove("prdactive");
+    }
+    m.parentElement.children[1].textContent = counter;
+    allProducts[index].counter = counter;
+    createProdOnCart();
+  });
+});
