@@ -99,6 +99,16 @@ function createEmptyCart() {
   divEmptyCart.appendChild(cartPara);
 }
 
+///////////////////////////////////////////////////////////////
+/////////  Remove Total Price and Confirm Btn /////////////////
+///////////////////////////////////////////////////////////////
+function removeTotPrcConfBtn() {
+  /////////////////////// Remove Total Price on Cart
+  const divPrTT = document.querySelectorAll(".total-order");
+  divPrTT.forEach((pd) => pd.setAttribute("style", "display:none"));
+  const divConfm = document.querySelectorAll(".btn");
+  divConfm.forEach((dvC) => dvC.setAttribute("style", "display:none"));
+}
 ////////////////////////////////////////////////////////////////
 ////////// Show Products On Cart  /////////////////////////////
 ////////////////////////////////////////////////////////////////
@@ -114,55 +124,86 @@ function createProdOnCart() {
   if (productsOnCart.length == 0) {
     createEmptyCart();
   }
-  console.log(productsOnCart);
-  const prodsCatrs = document.querySelectorAll(".cart-product");
-  prodsCatrs.forEach((pd) => pd.setAttribute("style", "display:none"));
-  prodsCatrs.forEach((pd) => pd.setAttribute("style", "display:none"));
-  //   // Show Products On Cart
-  productsOnCart.forEach((product) => {
-    let divProdCart = document.createElement("div");
-    divProdCart.className = "cart-product";
-    cart.appendChild(divProdCart);
+  if (productsOnCart.length >= 0) {
+    const prodsCatrs = document.querySelectorAll(".cart-product");
+    prodsCatrs.forEach((pd) => pd.setAttribute("style", "display:none"));
+    prodsCatrs.forEach((pd) => pd.setAttribute("style", "display:none"));
+    //   // Show Products On Cart
+    productsOnCart.forEach((product) => {
+      let divProdCart = document.createElement("div");
+      divProdCart.className = "cart-product";
+      cart.appendChild(divProdCart);
 
-    let cartProdBody = document.createElement("div");
-    cartProdBody.className = "body";
-    divProdCart.appendChild(cartProdBody);
+      let cartProdBody = document.createElement("div");
+      cartProdBody.className = "body";
+      divProdCart.appendChild(cartProdBody);
 
-    let cartProdTitle = document.createElement("div");
-    cartProdTitle.className = "title";
-    cartProdTitleTxt = document.createTextNode(`${product.title}`);
-    cartProdTitle.appendChild(cartProdTitleTxt);
-    cartProdBody.appendChild(cartProdTitle);
+      let cartProdTitle = document.createElement("div");
+      cartProdTitle.className = "title";
+      cartProdTitleTxt = document.createTextNode(`${product.title}`);
+      cartProdTitle.appendChild(cartProdTitleTxt);
+      cartProdBody.appendChild(cartProdTitle);
 
-    let cartProdPrice = document.createElement("div");
-    cartProdPrice.className = "price";
-    cartProdBody.appendChild(cartProdPrice);
+      let cartProdPrice = document.createElement("div");
+      cartProdPrice.className = "price";
+      cartProdBody.appendChild(cartProdPrice);
 
-    let prodNb = document.createElement("span");
-    let prodNbTxt = document.createTextNode(`${product.counter}x`);
-    prodNb.appendChild(prodNbTxt);
-    cartProdPrice.appendChild(prodNb);
+      let prodNb = document.createElement("span");
+      let prodNbTxt = document.createTextNode(`${product.counter}x`);
+      prodNb.appendChild(prodNbTxt);
+      cartProdPrice.appendChild(prodNb);
 
-    let prodPr = document.createElement("span");
-    let prodPrTxt = document.createTextNode(`$${product.price.toFixed(2)}`);
-    prodPr.appendChild(prodPrTxt);
-    cartProdPrice.appendChild(prodPr);
+      let prodPr = document.createElement("span");
+      let prodPrTxt = document.createTextNode(`$${product.price.toFixed(2)}`);
+      prodPr.appendChild(prodPrTxt);
+      cartProdPrice.appendChild(prodPr);
 
-    let prodPrT = document.createElement("span");
-    let prdTP = product.price * product.counter;
-    let prodPrTTxt = document.createTextNode(`$${prdTP.toFixed(2)}`);
-    prodPrT.appendChild(prodPrTTxt);
-    cartProdPrice.appendChild(prodPrT);
+      let prodPrT = document.createElement("span");
+      let prdTP = product.price * product.counter;
+      let prodPrTTxt = document.createTextNode(`$${prdTP.toFixed(2)}`);
+      prodPrT.appendChild(prodPrTTxt);
+      cartProdPrice.appendChild(prodPrT);
 
-    let cartPrdRemove = document.createElement("div");
-    cartPrdRemove.className = "btn-remove";
-    divProdCart.appendChild(cartPrdRemove);
+      let cartPrdRemove = document.createElement("div");
+      cartPrdRemove.className = "btn-remove";
+      divProdCart.appendChild(cartPrdRemove);
 
-    let prodRmh3 = document.createElement("h3");
-    let prodRmh3Txt = document.createTextNode("x");
-    prodRmh3.appendChild(prodRmh3Txt);
-    cartPrdRemove.appendChild(prodRmh3);
-  });
+      let prodRmh3 = document.createElement("h3");
+      let prodRmh3Txt = document.createTextNode("x");
+      prodRmh3.appendChild(prodRmh3Txt);
+      cartPrdRemove.appendChild(prodRmh3);
+    });
+    let totalPrice = productsOnCart.reduce((total, product) => {
+      return total + product.price * product.counter;
+    }, 0);
+
+    ////  Remove Total Price and Confirm Btn //////
+    removeTotPrcConfBtn();
+    /// Create  and Set Total Price on Cart
+    let divTprc = document.createElement("div");
+    divTprc.className = "total-order";
+    cart.appendChild(divTprc);
+
+    let divTprcTitle = document.createElement("span");
+    let divTprcTitleTxt = document.createTextNode("Order Total :");
+    divTprcTitle.appendChild(divTprcTitleTxt);
+    divTprc.appendChild(divTprcTitle);
+
+    let divTprcTotal = document.createElement("span");
+    let divTprcTotalTxt = document.createTextNode(`${totalPrice.toFixed(2)}`);
+    divTprcTotal.appendChild(divTprcTotalTxt);
+    divTprc.appendChild(divTprcTotal);
+
+    /// Create  and Set Confirmation Button on Cart
+    let divConf = document.createElement("div");
+    divConf.className = "btn";
+    cart.appendChild(divConf);
+
+    let prcBtn = document.createElement("button");
+    let prcBtnTxt = document.createTextNode("Confirm Order");
+    prcBtn.appendChild(prcBtnTxt);
+    divConf.appendChild(prcBtn);
+  }
 }
 
 ////////////////////////////////////////////////////////////////
@@ -188,13 +229,23 @@ moins.forEach((m, index) => {
     if (counter >= 1) {
       counter--;
     }
+    m.parentElement.children[1].textContent = counter;
+    allProducts[index].counter = counter;
+    createProdOnCart();
+
     if (counter == 0) {
       productCount[index].setAttribute("style", "display: none");
       addToCart[index].setAttribute("style", "display: flex");
       products[index].children[0].children[0].classList.remove("prdactive");
     }
-    m.parentElement.children[1].textContent = counter;
-    allProducts[index].counter = counter;
-    createProdOnCart();
+
+    //// Get Products that will show on Cart
+    let productsOnCart = allProducts.filter((product) => {
+      return product.counter >= 1;
+    });
+    if (productsOnCart.length == 0) {
+      ////  Remove Total Price and Confirm Btn //////
+      removeTotPrcConfBtn();
+    }
   });
 });
