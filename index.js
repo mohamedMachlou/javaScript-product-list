@@ -1,9 +1,12 @@
+const container = Array.from(document.querySelectorAll(".container"));
 const products = Array.from(document.querySelectorAll(".product"));
 const addToCart = Array.from(document.querySelectorAll(".add-to-cart"));
 const productCount = Array.from(document.querySelectorAll(".product-count"));
 const cart = document.querySelector(".cart");
 const moins = Array.from(document.querySelectorAll(".moins"));
 const plus = Array.from(document.querySelectorAll(".plus"));
+const popupBackground = document.querySelector(".popup-back");
+const popupForeground = document.querySelector(".popup-fore");
 
 /////  Data Products List
 let allProducts = [
@@ -21,6 +24,7 @@ let allProducts = [
     price: 7.99,
     counter: 0,
     selected: false,
+    img: "./assets/images/image-creme-brulee-desktop.jpg",
   },
   {
     name: "Macaron",
@@ -28,6 +32,55 @@ let allProducts = [
     price: 8.46,
     counter: 0,
     selected: false,
+    img: "./assets/images/image-macaron-desktop.jpg",
+  },
+  {
+    name: "Tiramisu",
+    title: "Classic Tiramissu",
+    price: 8.46,
+    counter: 0,
+    selected: false,
+    img: "./assets/images/image-tiramisu-desktop.jpg",
+  },
+  {
+    name: "Baklava",
+    title: "Pistachio Baklava",
+    price: 8.46,
+    counter: 0,
+    selected: false,
+    img: "./assets/images/image-baklava-desktop.jpg",
+  },
+  {
+    name: "Pie",
+    title: "Lemon Meringue Pie",
+    price: 5.46,
+    counter: 0,
+    selected: false,
+    img: "./assets/images/image-meringue-desktop.jpg",
+  },
+  {
+    name: "Cake",
+    title: "Red Velvet Cake",
+    price: 4.46,
+    counter: 0,
+    selected: false,
+    img: "./assets/images/image-cake-desktop.jpg",
+  },
+  {
+    name: "Brownie",
+    title: "Salted Caramel Brownie",
+    price: 4.46,
+    counter: 0,
+    selected: false,
+    img: "./assets/images/image-brownie-desktop.jpg",
+  },
+  {
+    name: "Panna Cotta",
+    title: "Vanilla Panna Cotta",
+    price: 6.5,
+    counter: 0,
+    selected: false,
+    img: "./assets/images/image-panna-cotta-desktop.jpg",
   },
 ];
 
@@ -173,6 +226,7 @@ function createProdOnCart() {
       prodRmh3.appendChild(prodRmh3Txt);
       cartPrdRemove.appendChild(prodRmh3);
     });
+
     let totalPrice = productsOnCart.reduce((total, product) => {
       return total + product.price * product.counter;
     }, 0);
@@ -197,6 +251,7 @@ function createProdOnCart() {
     /// Create  and Set Confirmation Button on Cart
     let divConf = document.createElement("div");
     divConf.className = "btn";
+    divConf.setAttribute("onclick", "confirmOrder()");
     cart.appendChild(divConf);
 
     let prcBtn = document.createElement("button");
@@ -249,3 +304,49 @@ moins.forEach((m, index) => {
     }
   });
 });
+
+////////////////////////////////////////////////////////////////
+////////  View Cart onClick Confirm Button   ///////////////////
+////////////////////////////////////////////////////////////////
+///// Hide Pop-up
+hidePopup();
+function hidePopup() {
+  popupBackground.setAttribute("style", "display: none");
+  popupForeground.setAttribute("style", "display: none");
+}
+///// Show Pop-up
+function showPopup() {
+  popupBackground.setAttribute("style", "display: flex");
+  popupForeground.setAttribute("style", "display: flex");
+}
+
+///// Confirmation Order Function
+function confirmOrder() {
+  //// Get Products that will show on Cart
+  const productsOnCart = allProducts.filter((product) => {
+    return product.counter >= 1;
+  });
+  if (productsOnCart.length != 0) {
+    console.log("salam Machlou");
+    showPopup();
+
+    /// Create Confirmation Header
+    let orderConf = document.createElement("div");
+    orderConf.className = "confirm-title";
+    let orderConfTxt = document.createTextNode("Order Confirmed");
+    orderConf.appendChild(orderConfTxt);
+    popupForeground.appendChild(orderConf);
+
+    /// Create Confirmation paragraph
+    let orderConfpara = document.createElement("div");
+    orderConfpara.className = "confirm-para";
+    let orderConfparaTxt = document.createTextNode(
+      "We hope you enjoy you food!"
+    );
+    orderConfpara.appendChild(orderConfparaTxt);
+    popupForeground.appendChild(orderConfpara);
+
+    ///// Confirmation Body
+    let confirmBody = document.createElement("div");
+  }
+}
