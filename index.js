@@ -117,6 +117,12 @@ products.map((product, index) => {
   product.children[1].textContent = allProducts[index].name;
   product.children[2].textContent = allProducts[index].title;
   product.children[3].textContent = `$${allProducts[index].price}`;
+  console.log(
+    product.children[0].children[0].setAttribute(
+      "src",
+      `${allProducts[index].img}`
+    )
+  );
 });
 
 ////////////////////////////////////////////////////////////////
@@ -174,10 +180,16 @@ function createProdOnCart() {
   let productsOnCart = allProducts.filter((product) => {
     return product.counter >= 1;
   });
+
+  /// Show Number of products on Cart
+  let nbProdOnCart = document.querySelector(".nb-in-cart");
+  nbProdOnCart.textContent = productsOnCart.length;
+
   if (productsOnCart.length == 0) {
     createEmptyCart();
   }
   if (productsOnCart.length >= 0) {
+    ///// Create products on Cart
     const prodsCatrs = document.querySelectorAll(".cart-product");
     prodsCatrs.forEach((pd) => pd.setAttribute("style", "display:none"));
     prodsCatrs.forEach((pd) => pd.setAttribute("style", "display:none"));
@@ -327,8 +339,26 @@ function confirmOrder() {
     return product.counter >= 1;
   });
   if (productsOnCart.length != 0) {
-    console.log("salam Machlou");
     showPopup();
+
+    /// Hide Old Orders Confirmations Details
+    let oldImg = document.querySelectorAll(".popup-img ");
+    oldImg.forEach((t) => t.setAttribute("style", "display: none"));
+    let oldTitle = document.querySelectorAll(".confirm-title");
+    oldTitle.forEach((t) => t.setAttribute("style", "display: none"));
+    let oldpara = document.querySelectorAll(".confirm-para");
+    oldpara.forEach((p) => p.setAttribute("style", "display: none"));
+    let oldBody = document.querySelectorAll(".confirm-body");
+    oldBody.forEach((b) => b.setAttribute("style", "display: none"));
+
+    /// Create Confirmation Icon
+    let popupImgDiv = document.createElement("div");
+    popupImgDiv.className = "popup-img";
+    popupForeground.appendChild(popupImgDiv);
+
+    let popupImg = document.createElement("img");
+    popupImg.setAttribute("src", "./assets/images/icon-checked.svg");
+    popupImgDiv.appendChild(popupImg);
 
     /// Create Confirmation Header
     let orderConf = document.createElement("div");
@@ -346,7 +376,130 @@ function confirmOrder() {
     orderConfpara.appendChild(orderConfparaTxt);
     popupForeground.appendChild(orderConfpara);
 
-    ///// Confirmation Body
+    ///////////////////////////////////////////////////
+    /////////// Confirmation Body  ////////////////////
+    ///////////////////////////////////////////////////
     let confirmBody = document.createElement("div");
+    confirmBody.className = "confirm-body";
+    popupForeground.appendChild(confirmBody);
+
+    ///////////////////////////////////////////////////
+    ///////  Product in confirm body //////////////////
+    ///////////////////////////////////////////////////
+    productsOnCart.forEach((product, index) => {
+      let prodConfirm = document.createElement("div");
+      prodConfirm.className = "confirm-product";
+      confirmBody.appendChild(prodConfirm);
+
+      //// Product details in confirm product
+      let imgConfirm = document.createElement("div");
+      imgConfirm.className = "prod-details";
+      prodConfirm.appendChild(imgConfirm);
+
+      //// Img in product details
+      let prodImg = document.createElement("img");
+      prodImg.setAttribute("src", `${product.img}`);
+      imgConfirm.appendChild(prodImg);
+
+      //// Title in product image
+      let prodTitle = document.createElement("div");
+      prodTitle.className = "prod-title";
+      imgConfirm.appendChild(prodTitle);
+
+      ////// Header
+      let prodHeader = document.createElement("h3");
+      let prodHeaderTxt = document.createTextNode(`${product.title}`);
+      prodHeader.appendChild(prodHeaderTxt);
+      prodTitle.appendChild(prodHeader);
+
+      ////// Header 2
+      let prodH = document.createElement("div");
+      prodH.className = "nb-price";
+      prodTitle.appendChild(prodH);
+
+      ////// Product selected times
+      let prSelectedTimes = document.createElement("h4");
+      let prSelectedTimesTxt = document.createTextNode(`${product.counter}x`);
+      prSelectedTimes.appendChild(prSelectedTimesTxt);
+      prodH.appendChild(prSelectedTimes);
+
+      ////// Product selected price
+      let prSelectedPrice = document.createElement("h4");
+      let prSelectedPriceTxt = document.createTextNode(
+        `@ $${product.price.toFixed(2)}`
+      );
+      prSelectedPrice.appendChild(prSelectedPriceTxt);
+      prodH.appendChild(prSelectedPrice);
+
+      //// Price in confirm product
+      let priceConf = document.createElement("div");
+      let popupTotalPrice = product.counter * product.price;
+      let priceConfTxt = document.createTextNode(
+        `$${popupTotalPrice.toFixed(2)}`
+      );
+      priceConf.className = "price-confirm";
+      priceConf.appendChild(priceConfTxt);
+      prodConfirm.appendChild(priceConf);
+    });
+
+    ////////////////////////////////////////////////////////
+    ///////////  Order Total and Confirmation Button ///////
+    ////////////////////////////////////////////////////////
+    ///// Order Total
+    let orderTotal = document.createElement("div");
+    orderTotal.className = "conf-order-total ";
+    confirmBody.appendChild(orderTotal);
+
+    ///// Order Total Title
+    let orderTotalTitle = document.createElement("h4");
+    let orderTotalTitleTxt = document.createTextNode("Order Total : ");
+    orderTotalTitle.appendChild(orderTotalTitleTxt);
+    orderTotal.appendChild(orderTotalTitle);
+
+    ///// Order Total Price Calcul
+    let orderTotalConfPrice = productsOnCart.reduce((total, product) => {
+      return (total += product.price * product.counter);
+    }, 0);
+
+    ///// Order Total Price
+    let orderTotalPrice = document.createElement("h4");
+    let orderTotalPriceTxt = document.createTextNode(
+      `$${orderTotalConfPrice.toFixed(2)}`
+    );
+    orderTotalPrice.appendChild(orderTotalPriceTxt);
+    orderTotal.appendChild(orderTotalPrice);
+
+    ///// Pop-up Confirmation Button
+    let popupBtn = document.createElement("button");
+    popupBtn.setAttribute("onclick", "startNewOrder()");
+    let popupBtntxt = document.createTextNode("Start New Order");
+    popupBtn.appendChild(popupBtntxt);
+    confirmBody.appendChild(popupBtn);
   }
+}
+
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+function startNewOrder() {
+  // Hide pop-up
+  hidePopup();
+
+  //
+  allProducts.forEach((product) => (product.counter = 0));
+
+  //////////////////////////////////////////////////////////////////////////////////////
+  ///// Hide product coutner and show Add To Cart Buton from product  //////////
+  //////////////////////////////////////////////////////////////////////////////////////
+  addToCart.map((ele, index) => {
+    ele.setAttribute("style", "display: flex");
+    productCount[index].setAttribute("style", "display: none");
+    allProducts[index].counter = 0;
+    productCount[index].children[1].textContent = allProducts[index].counter;
+    products[index].children[0].children[0].classList.remove("prdactive");
+  });
+
+  // createProdOnCart();
+  createProdOnCart();
+  removeTotPrcConfBtn();
 }
