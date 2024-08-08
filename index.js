@@ -475,6 +475,9 @@ function confirmOrder() {
     let popupBtntxt = document.createTextNode("Start New Order");
     popupBtn.appendChild(popupBtntxt);
     confirmBody.appendChild(popupBtn);
+
+    const foreGroundImg = document.querySelector(".popup-img");
+    foreGroundImg.scrollIntoView();
   }
 }
 
