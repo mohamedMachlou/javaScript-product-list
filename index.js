@@ -114,15 +114,13 @@ addToCart.map((ele, index) => {
 //////  Set Name, Title and Price From All products Array to Display  /////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
 products.map((product, index) => {
+  product.children[0].children[0].setAttribute(
+    "src",
+    `${allProducts[index].img}`
+  );
   product.children[1].textContent = allProducts[index].name;
   product.children[2].textContent = allProducts[index].title;
   product.children[3].textContent = `$${allProducts[index].price}`;
-  console.log(
-    product.children[0].children[0].setAttribute(
-      "src",
-      `${allProducts[index].img}`
-    )
-  );
 });
 
 ////////////////////////////////////////////////////////////////
@@ -168,6 +166,7 @@ function removeTotPrcConfBtn() {
   const divConfm = document.querySelectorAll(".btn");
   divConfm.forEach((dvC) => dvC.setAttribute("style", "display:none"));
 }
+
 ////////////////////////////////////////////////////////////////
 ////////// Show Products On Cart  /////////////////////////////
 ////////////////////////////////////////////////////////////////
@@ -232,11 +231,6 @@ function createProdOnCart() {
       let cartPrdRemove = document.createElement("div");
       cartPrdRemove.className = "btn-remove";
       divProdCart.appendChild(cartPrdRemove);
-
-      let prodRmh3 = document.createElement("h3");
-      let prodRmh3Txt = document.createTextNode("x");
-      prodRmh3.appendChild(prodRmh3Txt);
-      cartPrdRemove.appendChild(prodRmh3);
     });
 
     let totalPrice = productsOnCart.reduce((total, product) => {
@@ -272,6 +266,13 @@ function createProdOnCart() {
     divConf.appendChild(prcBtn);
   }
 }
+// ///////////// Delete from Cart
+// function deleteOnCart() {
+//   let btnDelete = document.querySelectorAll("delete-on-cart");
+//   btnDelete.forEach((btn) => {
+//     console.log(btn);
+//   });
+// }
 
 ////////////////////////////////////////////////////////////////
 //////////  Counter Plus Button    /////////////////////////////
@@ -338,7 +339,7 @@ function confirmOrder() {
   const productsOnCart = allProducts.filter((product) => {
     return product.counter >= 1;
   });
-  if (productsOnCart.length != 0) {
+  if (productsOnCart.length >= 1) {
     showPopup();
 
     /// Hide Old Orders Confirmations Details
@@ -476,7 +477,7 @@ function confirmOrder() {
     popupBtn.appendChild(popupBtntxt);
     confirmBody.appendChild(popupBtn);
 
-    const foreGroundImg = document.querySelector(".popup-img");
+    let foreGroundImg = document.querySelector(".popup-img");
     foreGroundImg.scrollIntoView();
   }
 }
